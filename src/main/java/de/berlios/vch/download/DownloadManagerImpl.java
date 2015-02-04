@@ -66,7 +66,8 @@ public class DownloadManagerImpl implements DownloadManager, DownloadStateListen
 
     private Unmarshaller unmarshaller;
 
-    private ServiceTracker downloadFactoryTracker;
+	@SuppressWarnings("rawtypes")
+	private ServiceTracker downloadFactoryTracker;
 
     private BundleContext ctx;
 
@@ -234,7 +235,8 @@ public class DownloadManagerImpl implements DownloadManager, DownloadStateListen
         }
     }
 
-    @Override
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@Override
     public void init(Preferences prefs) {
         this.prefs = prefs;
         this.prefs.addPreferenceChangeListener(new PreferenceChangeListener() {
