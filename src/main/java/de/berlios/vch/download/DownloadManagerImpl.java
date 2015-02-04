@@ -66,8 +66,7 @@ public class DownloadManagerImpl implements DownloadManager, DownloadStateListen
 
     private Unmarshaller unmarshaller;
 
-	@SuppressWarnings("rawtypes")
-	private ServiceTracker downloadFactoryTracker;
+	private ServiceTracker<DownloadFactory, DownloadFactory> downloadFactoryTracker;
 
     private BundleContext ctx;
 
@@ -235,7 +234,6 @@ public class DownloadManagerImpl implements DownloadManager, DownloadStateListen
         }
     }
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
     public void init(Preferences prefs) {
         this.prefs = prefs;
@@ -260,7 +258,7 @@ public class DownloadManagerImpl implements DownloadManager, DownloadStateListen
         }
 
         // create service tracker for download factories
-        downloadFactoryTracker = new ServiceTracker(ctx, DownloadFactory.class.getName(), null);
+        downloadFactoryTracker = new ServiceTracker<DownloadFactory, DownloadFactory>(ctx, DownloadFactory.class.getName(), null);
         downloadFactoryTracker.open();
     }
 
