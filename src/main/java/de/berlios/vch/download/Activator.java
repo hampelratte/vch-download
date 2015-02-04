@@ -43,7 +43,7 @@ public class Activator {
     @Requires
     private PlaylistService playlistService;
 
-    private List<ServiceRegistration> serviceRegs = new LinkedList<ServiceRegistration>();
+    private List<ServiceRegistration<?>> serviceRegs = new LinkedList<ServiceRegistration<?>>();
 
     public Activator(BundleContext ctx) {
         this.ctx = ctx;
@@ -56,12 +56,12 @@ public class Activator {
         try {
             // register osd actions
             DownloadAction action = new DownloadAction(rbp.getResourceBundle(), dm, logger);
-            ServiceRegistration sr = ctx.registerService(ItemDetailsAction.class.getName(), action, null);
-            serviceRegs.add(sr);
+            ServiceRegistration<ItemDetailsAction> srida = ctx.registerService(ItemDetailsAction.class, action, null);
+            serviceRegs.add(srida);
             OpenDownloadsAction oda = new OpenDownloadsAction(rbp.getResourceBundle(), dm, logger, prefs,
                     playlistService);
-            sr = ctx.registerService(OverviewAction.class.getName(), oda, null);
-            serviceRegs.add(sr);
+            ServiceRegistration<OverviewAction> sroa = ctx.registerService(OverviewAction.class, oda, null);
+            serviceRegs.add(sroa);
         } catch (Exception e) {
             logger.log(LogService.LOG_ERROR, "Couldn't start download manager", e);
         }
@@ -81,14 +81,14 @@ public class Activator {
         dm.stop();
 
         // unregister osd actions and web menu etc
-        for (Iterator<ServiceRegistration> iterator = serviceRegs.iterator(); iterator.hasNext();) {
-            ServiceRegistration sr = iterator.next();
+        for (Iterator<ServiceRegistration<?>> iterator = serviceRegs.iterator(); iterator.hasNext();) {
+            ServiceRegistration<?> sr = iterator.next();
             unregisterService(sr);
             iterator.remove();
         }
     }
 
-    private void unregisterService(ServiceRegistration sr) {
+    private void unregisterService(ServiceRegistration<?> sr) {
         if (sr != null) {
             sr.unregister();
         }
