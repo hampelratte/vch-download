@@ -7,6 +7,7 @@ import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.text.DateFormat;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.GregorianCalendar;
 import java.util.Iterator;
 import java.util.List;
@@ -66,7 +67,7 @@ public class DownloadManagerImpl implements DownloadManager, DownloadStateListen
 
     private Unmarshaller unmarshaller;
 
-	private ServiceTracker<DownloadFactory, DownloadFactory> downloadFactoryTracker;
+    private ServiceTracker<DownloadFactory, DownloadFactory> downloadFactoryTracker;
 
     private BundleContext ctx;
 
@@ -234,7 +235,7 @@ public class DownloadManagerImpl implements DownloadManager, DownloadStateListen
         }
     }
 
-	@Override
+    @Override
     public void init(Preferences prefs) {
         this.prefs = prefs;
         this.prefs.addPreferenceChangeListener(new PreferenceChangeListener() {
@@ -297,6 +298,10 @@ public class DownloadManagerImpl implements DownloadManager, DownloadStateListen
 
     @Override
     public synchronized List<DownloadDTO> getFinishedDownloads() {
+        if(!dataDir.exists()) {
+            return Collections.emptyList();
+        }
+
         File[] descriptors = dataDir.listFiles(new FilenameFilter() {
             @Override
             public boolean accept(File dir, String name) {
@@ -385,7 +390,7 @@ public class DownloadManagerImpl implements DownloadManager, DownloadStateListen
 
     /**
      * Writes a .nfo file for a given video file and description. The nfo file will have the same name as the video file plus the file extension .nfo
-     * 
+     *
      * @param videoFile
      *            The video file to write the nfo file for
      * @param desc
@@ -424,7 +429,7 @@ public class DownloadManagerImpl implements DownloadManager, DownloadStateListen
 
     /**
      * Deletes a meta file for a given video file, if the meta file exists.
-     * 
+     *
      * @param videoFile
      *            the video file of the meta data file
      * @param metaFileExtension
